@@ -24,7 +24,7 @@ public class SpringbootJpaApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		List<Person> personList = (List<Person>) personRepository.findAll();
 		personList.stream().forEach(person -> {
-			System.out.println(person+"");
+			System.out.println(person.toString());
 		});
 	}
 

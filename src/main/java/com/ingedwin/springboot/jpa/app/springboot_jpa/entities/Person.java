@@ -10,11 +10,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "persons")
 public class Person {
@@ -31,8 +33,17 @@ public class Person {
      * crea la instancia con "_" o sea "programming_language" por tal motivo no va a reconover
      * la columna ya que se estructuran por defecto diferentes, así que usamos el Column para
      * especificar el nombre de la columna y evitar errores
+     * 
+     * Mucho cuidado de usar @ToString en entidades con relaciones tipo ManyToOne o OneToMany, etc
+     * ya que podría causar recursiones infinitas, enese caso ponemos ToString(exclude="Notaciones") 
+     * para evitar problemas
+     * 
+     * El Fetch ayuda a evitar cargar todas las direcciones automáticamente cada vez que consultas una 
+     * persona. (Esto mejora mucho el rendimiento.)
+     * @ManyToOne(fetch = FetchType.LAZY)
+     * 
      */
 
-    @Column(name = "programming_languaje") 
+    @Column(name = "programming_language") 
     private String programmingLanguage;
 }
