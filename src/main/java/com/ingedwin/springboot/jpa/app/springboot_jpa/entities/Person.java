@@ -21,13 +21,6 @@ import lombok.ToString;
 @Table(name = "persons")
 public class Person {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String name;
-    private String lastname;
-
     /*
      * Cuando tenemos una composicion de palabras como en el caso de programmingLanguage, sql
      * crea la instancia con "_" o sea "programming_language" por tal motivo no va a reconover
@@ -38,11 +31,18 @@ public class Person {
      * ya que podría causar recursiones infinitas, enese caso ponemos ToString(exclude="Notaciones") 
      * para evitar problemas
      * 
-     * El Fetch ayuda a evitar cargar todas las direcciones automáticamente cada vez que consultas una 
-     * persona. (Esto mejora mucho el rendimiento.)
+     * El Fetch ayuda a evitar cargar todas las direcciones automáticamente cada vez que consultas 
+     * una persona. (Esto mejora mucho el rendimiento.)
      * @ManyToOne(fetch = FetchType.LAZY)
      * 
      */
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String lastname;
 
     @Column(name = "programming_language") 
     private String programmingLanguage;
