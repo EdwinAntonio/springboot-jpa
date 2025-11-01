@@ -1,6 +1,7 @@
 package com.ingedwin.springboot.jpa.app.springboot_jpa.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -54,5 +55,25 @@ public interface PersonRepository extends CrudRepository<Person, Long>{
 
      @Query("select p.programmingLanguage from Person p where p.programmingLanguage=?1")
      List<Object[]> obtenerPersonDataByProgrammingLanguage(String programmingLanguage);
+
+     /*
+      * A diferencia de los metodos de arriba sirve cuando queremos recibir una lista de Objetos
+      * mientras que los siguientes retornan solamente 1 elemento
+      * 
+      * En caso de usar la palabra reservada "like %?1%" hace una busqueda del campo de izq a der
+      * para ver si algo conicide con esa entrada con los comodines de %
+      */
+
+     @Query("select p from Person p where p.id=?1")
+     Optional<Person> findOne(Long id);
+
+     @Query("select p from Person p where p.name=?1")
+     Optional<Person> findOneName(String name);
+
+     @Query("select p from Person p where p.name like %?1%")
+     Optional<Person> findOneLikeName(String name);
+
+     @Query("select concat(p.name, ' ' ,p.lastname) as fullName from Person p where p.id=?1")
+     String getFullNameById(Long id);
 
 }

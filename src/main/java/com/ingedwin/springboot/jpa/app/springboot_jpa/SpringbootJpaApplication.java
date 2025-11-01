@@ -1,11 +1,14 @@
 package com.ingedwin.springboot.jpa.app.springboot_jpa;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ingedwin.springboot.jpa.app.springboot_jpa.entities.Person;
 import com.ingedwin.springboot.jpa.app.springboot_jpa.repositories.PersonRepository;
@@ -23,9 +26,76 @@ public class SpringbootJpaApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		//listas();
-		findOne(2L);
+		// findOne(2L);
+		 create();
+		//update();
+		// delete();
 	}
 
+	@Transactional
+	public void create(){
+
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingrese Nombre");
+		String name = scanner.next();
+		System.out.println("Ingrese Apellido");
+		String lastname = scanner.next();
+		System.out.println("Ingrese Lenguaje");
+		String language = scanner.next();
+
+		Person person = new Person(null,name,lastname,language);
+		personRepository.save(person);
+
+		personRepository.findById(person.getId());
+
+		scanner.close();
+	}
+
+	@Transactional
+	public void update(){
+
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingresar ID del usuario");
+		Long id = scanner.nextLong();
+		Optional<Person> personUpdate = personRepository.findById(id);
+
+		personUpdate.ifPresent(p -> {
+			System.out.println("Ingresar nuevo lenguage de programacion");
+			String lenguaje = scanner.next();
+			p.setProgrammingLanguage(lenguaje);
+			personRepository.save(p);
+			System.out.println(personRepository.findById(p.getId()));
+		});
+
+		scanner.close();
+	}
+
+	@Transactional
+	public void delete(){
+
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Ingresa el id que deseas eliminar");
+		Long delete = scanner.nextLong();
+		Optional<Person> deletePerson = personRepository.findById(delete);
+
+		deletePerson.ifPresent(p ->{
+			personRepository.deleteById(delete);
+			System.out.println("Usuario " + p.getName() + " eliminado");
+			
+			scanner.close();
+		});
+
+	}
+	/*
+	 * Cuando realizamos un request a la base de datos, ya sea para eliminar, crear o actualizar
+	 * utilizamos la notacion @Transactional, en caso de ser solamente puras consultas de
+	 * busqueda igualmente usamos transactional pero en modo readOnly, ejemplo:
+	 * 
+	 * @Transactional(readOnly = true)
+	 * 
+	 */
+
+	@Transactional(readOnly = true)
 	public void findOne(Long id){
 		/*
 		 * En caso de retornar un Obtional<T> una forma alternativa sería con un operador ternario
@@ -52,8 +122,11 @@ public class SpringbootJpaApplication implements CommandLineRunner {
 		  * 
 		  * ifPresent(System.out::println);
 		  */
+
+		  personRepository.findOneLikeName("pe").ifPresent(SpringbootJpaApplication::mensajeEnConsola);
 	}
 
+	@Transactional(readOnly = true)
 	public void listas(){
 		//List<Person> personList = (List<Person>) personRepository.findAll();
 		//List<Person> personList = (List<Person>) personRepository.buscarByProggramingAndName("Java","Andres");
